@@ -12,4 +12,8 @@ body {
   display: grid;
   place-content: center;
   color: $color-white;
+  @media only screen and (max-width: 650px) {
+    display: block;
+    padding: 20px;
+  }
 }

@@ -2,22 +2,22 @@
   <div class="next-days-weather">
     <ul class="next-days-weather__list">
       <li
-        v-for="day in weatherData"
-        :key="day.dt"
+        v-for="(day, index) in nextDaysWeatherData"
+        :key="index"
         class="next-days-weather__item"
       >
         <div class="next-days-weather__item-title">
-          {{ getDateWeekDay(day.dt_txt) }}
+          {{ getDateWeekDay(day.date) }}
         </div>
         <div class="next-days-weather__item-icon">
-          <img :src="getItemIconUrl(day)" alt="" />
+          <img :src="day.iconUrl" alt="" />
         </div>
         <div class="next-days-weather__item-temps">
-          {{ getItemTemperatures(day).absoluteTemp }}°
-          <span>{{ getItemTemperatures(day).feelsLike }}°</span>
+          {{ day.temperatures.absolute }}°
+          <span>{{ day.temperatures.feelsLike }}°</span>
         </div>
         <div class="next-days-weather__item-description">
-          {{ getItemDescription(day) }}
+          {{ day.description }}
         </div>
       </li>
     </ul>
@@ -25,25 +25,14 @@
 </template>
 
 <script setup lang="ts">
-import { getDateWeekDay } from "@/helpers/getDateWeekDay.ts";
+import { type nextDayWeather } from "~/types";
+import { getDateWeekDay } from "~/helpers/getDateWeekDay";
 const props = defineProps({
-  weatherData: Array,
+  nextDaysWeatherData: {
+    type: Array as PropType<nextDayWeather[]>,
+    default: null,
+  },
 });
-const getItemIconUrl = (item) =>
-  `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
-
-console.log(props.weatherData);
-
-const getItemTemperatures = (item) => {
-  const { temp: absoluteTemp } = item.main;
-  const { feels_like: feelsLike } = item.main;
-  return {
-    absoluteTemp: Math.round(absoluteTemp),
-    feelsLike: Math.round(feelsLike),
-  };
-};
-
-const getItemDescription = (item) => item.weather[0].description;
 </script>
 
 <style scoped lang="scss">
@@ -84,6 +73,7 @@ const getItemDescription = (item) => item.weather[0].description;
     &-description {
       font-size: 12px;
       width: min-content;
+      text-align: center;
     }
   }
 }

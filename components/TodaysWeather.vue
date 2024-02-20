@@ -2,74 +2,48 @@
   <div class="todays-weather">
     <div class="todays-weather__top">
       <div class="todays-weather__left">
-        <div class="todays-weather__absolute-temp">{{ temperatures.absoluteTemp }}°</div>
+        <div class="todays-weather__absolute-temp">{{ todaysWeatherData.temperatures.absolute }}°</div>
       </div>
       <div class="todays-weather__center">
         <div class="todays-weather__icon">
-          <img :src="weatherIconUrl" alt="" />
+          <img :src="todaysWeatherData.iconUrl" alt="" />
         </div>
       </div>
       <div class="todays-weather__right">
-        <div class="todays-weather__description">{{ description }}</div>
+        <div class="todays-weather__description">{{ todaysWeatherData.description }}</div>
         <div class="todays-weather__feels-like">
-          <span>Ощущается как</span> {{ temperatures.feelsLike }}°
+          <span>Ощущается как</span> {{ todaysWeatherData.temperatures.feelsLike }}°
         </div>
       </div>
     </div>
     <div class="todays-weather__bottom">
       <div class="todays-weather__wind">
         <IconWind class="todays-weather__wind-icon" />
-        {{ wind.windSpeed }} м/с
+        {{ todaysWeatherData.wind.speed }} м/с
         <IconWindArrow
           class="todays-weather__wind-icon todays-weather__wind-icon--arrow"
-          :style="`transform: rotate(${wind.windDeg}deg)`"
+          :style="`transform: rotate(${todaysWeatherData.wind.deg}deg)`"
         />
       </div>
       <div class="todays-weather__humidity">
         <IconHumidity class="todays-weather__humidity-icon" />
-        {{ humidity }}%
+        {{ todaysWeatherData.humidity }}%
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { type todaysWeather } from "~/types";
 import IconWind from "./icons/IconWind";
 import IconWindArrow from "./icons/IconWindArrow";
 import IconHumidity from "./icons/IconHumidity";
 
 const props = defineProps({
-  todaysWeatherData: Object,
-});
-
-const weatherIconUrl = computed(
-  () =>
-    `https://openweathermap.org/img/wn/${props.todaysWeatherData.weather[0].icon}@2x.png`
-);
-
-const temperatures = computed(() => {
-  const { temp: absoluteTemp } = props.todaysWeatherData.main;
-  const { feels_like: feelsLike } = props.todaysWeatherData.main;
-  return {
-    absoluteTemp: Math.round(absoluteTemp),
-    feelsLike: Math.round(feelsLike),
-  };
-});
-
-const description = computed(() => {
-  const { description } = props.todaysWeatherData.weather[0];
-  return description.charAt(0).toUpperCase() + description.slice(1);
-});
-
-const humidity = computed(() => props.todaysWeatherData.main.humidity);
-const wind = computed(() => {
-  const { speed: windSpeed } = props.todaysWeatherData.wind;
-  const { deg: windDeg } = props.todaysWeatherData.wind;
-
-  return {
-    windSpeed,
-    windDeg,
-  };
+  todaysWeatherData: {
+    type: Object as PropType<todaysWeather>,
+    default: null,
+  },
 });
 </script>
 
